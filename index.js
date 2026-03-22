@@ -1,6 +1,7 @@
 import Handlebars from "handlebars";
 import { Database } from "bun:sqlite";
 import { differenceInDays, startOfToday, startOfDay } from "date-fns";
+import { tz } from "@date-fns/tz";
 
 const db = new Database("database.db");
 
@@ -24,8 +25,8 @@ Bun.serve({
             return new Response(
                 homeTemplate({
                     daysSince: differenceInDays(
-                        startOfToday(new Date()),
-                        startOfDay(new Date(latestCollision.date)),
+                        startOfToday({ in: tz("America/Denver") }),
+                        startOfDay(new Date(latestCollision.date), { in: tz("America/Denver") }),
                     ),
                     latestCollision: {
                         ...latestCollision,
