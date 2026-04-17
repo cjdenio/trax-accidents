@@ -1,6 +1,6 @@
 import Handlebars from "handlebars";
 import { Database } from "bun:sqlite";
-import { differenceInDays, startOfToday, startOfDay } from "date-fns";
+import { differenceInDays, startOfToday, startOfDay, format } from "date-fns";
 import { tz } from "@date-fns/tz";
 
 const db = new Database("database.db");
@@ -30,9 +30,9 @@ Bun.serve({
                     ),
                     latestCollision: {
                         ...latestCollision,
-                        formattedDate: new Date(
+                        formattedDate: format(new Date(
                             latestCollision.date,
-                        ).toLocaleDateString("en-US", { dateStyle: "medium" }),
+                        ), "LLL d, yyyy", { in: tz("America/Denver") }),
                     },
                 }),
                 {
