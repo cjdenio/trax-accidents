@@ -29,20 +29,33 @@
             <pre class="font-sans text-wrap border border-gray-500 border-t-0 rounded-b-lg p-2">{{ latestCollision.content }}</pre>
         </div>
 
-        <div class="flex justify-between max-w-96 mx-auto h-8">
+        <div class="flex justify-between max-w-96 mx-auto h-8" id="the-box">
             {{#each last90Days }}
-                {{#if this}}
-                    <div class="h-full w-0.5 sm:w-1 bg-red-400"></div>
+                {{#if collision}}
+                    <div class="h-full w-0.5 sm:w-1 bg-red-400" data-date="{{ renderedDate }}"></div>
                 {{else}}
-                    <div class="h-full w-0.5 sm:w-1 bg-green-400"></div>
+                    <div class="h-full w-0.5 sm:w-1 bg-green-400" data-date="{{ renderedDate }}"></div>
                 {{/if}}
             {{/each}}
         </div>
 
         <div class="max-w-96 mx-auto flex justify-between">
-            <div class="text-gray-600 text-sm">60 days ago</div>
-            <div class="text-gray-600 text-sm">Today</div>
+            <div class="text-gray-400 text-sm basis-0 grow">60 days ago</div>
+            <div class="text-sm basis-0 grow text-center" id="selected-date"></div>
+            <div class="text-gray-400 text-sm basis-0 grow text-end">Today</div>
         </div>
+
+        <script>
+            for (const bar of document.querySelectorAll("[data-date]")) {
+                bar.addEventListener("mouseenter", function () {
+                    document.getElementById("selected-date").innerText = this.dataset["date"];
+                });
+            }
+
+            document.getElementById("the-box").addEventListener("mouseleave", function () {
+                document.getElementById("selected-date").innerText = "";
+            });
+        </script>
 
     </body>
 </html>

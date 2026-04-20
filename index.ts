@@ -1,6 +1,6 @@
 import Handlebars from "handlebars";
 import { Database } from "bun:sqlite";
-import { differenceInDays, startOfToday, startOfDay, format } from "date-fns";
+import { differenceInDays, startOfToday, startOfDay, format, formatDate, subDays } from "date-fns";
 import { tz } from "@date-fns/tz";
 
 const db = new Database("database.db");
@@ -31,16 +31,26 @@ Bun.serve({
 
             const allCollisions = db.query<ServiceAlert, []>("SELECT * FROM service_alerts WHERE is_collision ORDER BY date ASC").all()
 
-            const last60Days = new Array(60).fill(false)
+            let last60Days = new Array<{ collision: boolean; renderedDate: string; }>(60).fill({
+                collision: false,
+                renderedDate: "",
+            })
+
+            last60Days = last60Days.map((v, index) => {
+                return {
+                    ...v,
+                    renderedDate: format(subDays(new Date(), index), "LLL d, yyyy", { in: tz("America/Denver") }),
+                }
+            })
 
             for (const collision of allCollisions) {
                 const collisionDay = startOfDay(new Date(collision.date), { in: tz("America/Denver") })
                 const difference = differenceInDays(startOfToday({ in: tz("America/Denver") }), collisionDay)
-                if (difference > 60) {
+                if (difference >= 60) {
                     continue
                 }
 
-                last60Days[difference] = true
+                last60Days[difference].collision = true
             }
 
             last60Days.reverse()
