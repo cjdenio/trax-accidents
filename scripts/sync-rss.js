@@ -20,7 +20,7 @@ export default {
 
             for (const item of feed.items) {
                 const result = item.contentSnippet.match(
-                    /train[- ]v(?:ersus|s?\.?)?[- ](?:auto|vehicle)/i,
+                    /train[- ]v(?:ers[eu]s|s?\.?)?[- ](?:auto|vehicle|car)/i,
                 );
 
                 let content = item.contentSnippet;
